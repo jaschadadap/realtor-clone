@@ -1,10 +1,16 @@
 import React from 'react'
 import { useState } from 'react'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import OAuth from '../components/OAuth';
+import { db } from "../firebase"
+import { serverTimestamp, setDoc, doc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 export default function SignUp() {
+
+  const navigate = useNavigate()
 
   const [formData, setFormData] = useState({
     email: "",
@@ -23,9 +29,28 @@ export default function SignUp() {
 
   const [showPassword, setShowPassword] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    try {
+      const auth = getAuth()
+
+      // signs up user
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      updateProfile(auth.currentUser, {displayName: name})
+      const user = userCredential.user
+
+      // saves user data to firestore database
+      const formDataCopy = { ...formData }
+      delete formDataCopy.password
+      formDataCopy.timestamp = serverTimestamp()
+      await setDoc(doc(db, "users", user.uid), formDataCopy)
+      toast.success('You are signed up!')
+      navigate('/')
+    } catch (error) {
+      toast.error("Something went wrong.")
+    }
   }
+
 
   return (
     <section>
@@ -58,9 +83,10 @@ export default function SignUp() {
                 <Link to='/forgot-password' className='text-blue-500 hover:text-blue-800 transition duration-200 ease-in-out'>Forgot password</Link>
               </p>
             </div>
+            {/* sign in button */}
+            <button type='submit' className='w-full bg-blue-600 text-white rounded py-2 text-sm font-semibold uppercase shadow-md hover:bg-blue-700 transition ease-in-out duration-300 hover:shadow-lg active:bg-blue-800'>Sign up</button>
           </form>
-          {/* sign in button */}
-          <button type='submit' className='w-full bg-blue-600 text-white rounded py-2 text-sm font-semibold uppercase shadow-md hover:bg-blue-700 transition ease-in-out duration-300 hover:shadow-lg active:bg-blue-800'>Sign up</button>
+          
           <div className='flex items-center my-4 before:border-t before:flex-1  before:border-gray-300 after:border-t after:flex-1  after:border-gray-300'>
             <p className='font-semibold'>OR</p>
           </div>
