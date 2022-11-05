@@ -83,8 +83,9 @@ export default function SignUp() {
                 <Link to='/forgot-password' className='text-blue-500 hover:text-blue-800 transition duration-200 ease-in-out'>Forgot password</Link>
               </p>
             </div>
-            {/* sign in button */}
+            {/* sign up button */}
             <button type='submit' className='w-full bg-blue-600 text-white rounded py-2 text-sm font-semibold uppercase shadow-md hover:bg-blue-700 transition ease-in-out duration-300 hover:shadow-lg active:bg-blue-800'>Sign up</button>
+            
           </form>
           
           <div className='flex items-center my-4 before:border-t before:flex-1  before:border-gray-300 after:border-t after:flex-1  after:border-gray-300'>
