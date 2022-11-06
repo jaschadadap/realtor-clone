@@ -1,6 +1,8 @@
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import React from 'react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import OAuth from '../components/OAuth';
 
 export default function ForgotPassword() {
@@ -9,7 +11,7 @@ export default function ForgotPassword() {
     email: ""
   });
 
-  const {email, password, name} = formData;
+  const {email} = formData;
   
 
   function onChange(e){
@@ -19,8 +21,15 @@ export default function ForgotPassword() {
   }
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    try {
+      const auth = getAuth()
+      await sendPasswordResetEmail(auth, email)
+      toast.success('Email was sent')
+    } catch (error) {
+      toast.error('Could not send reset password')
+    }
   }
 
   return (
@@ -41,9 +50,10 @@ export default function ForgotPassword() {
                 <Link to='/sign-in' className='text-red-600 hover:text-red-700'> Sign in instead</Link>
               </p>
             </div>
+            <button type='submit' className='w-full bg-blue-600 text-white rounded py-2 text-sm font-semibold uppercase shadow-md hover:bg-blue-700 transition ease-in-out duration-300 hover:shadow-lg active:bg-blue-800'>Send reset password</button>
           </form>
           {/* sign in button */}
-          <button type='submit' className='w-full bg-blue-600 text-white rounded py-2 text-sm font-semibold uppercase shadow-md hover:bg-blue-700 transition ease-in-out duration-300 hover:shadow-lg active:bg-blue-800'>Send reset password</button>
+          
           <div className='flex items-center my-4 before:border-t before:flex-1  before:border-gray-300 after:border-t after:flex-1  after:border-gray-300'>
             <p className='font-semibold'>OR</p>
           </div>
