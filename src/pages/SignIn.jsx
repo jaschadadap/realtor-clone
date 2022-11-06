@@ -1,7 +1,9 @@
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import React from 'react'
 import { useState } from 'react'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import OAuth from '../components/OAuth';
 
 export default function SignIn() {
@@ -20,9 +22,21 @@ export default function SignIn() {
   }
 
   const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    console.log("submitted")
+    try {
+      const auth = getAuth()
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      if (userCredential.user) {
+        navigate('/')
+        console.log(userCredential.user)
+      }
+    } catch (error) {
+      toast.error("Sign in not successful")
+    }
   }
 
   return (
@@ -53,9 +67,10 @@ export default function SignIn() {
                 <Link to='/forgot-password' className='text-blue-500 hover:text-blue-800 transition duration-200 ease-in-out'>Forgot password</Link>
               </p>
             </div>
+            <button type='submit' className='w-full bg-blue-600 text-white rounded py-2 text-sm font-semibold uppercase shadow-md hover:bg-blue-700 transition ease-in-out duration-300 hover:shadow-lg active:bg-blue-800'>Sign in</button>
           </form>
           {/* sign in button */}
-          <button type='submit' className='w-full bg-blue-600 text-white rounded py-2 text-sm font-semibold uppercase shadow-md hover:bg-blue-700 transition ease-in-out duration-300 hover:shadow-lg active:bg-blue-800'>Sign In</button>
+          
           <div className='flex items-center my-4 before:border-t before:flex-1  before:border-gray-300 after:border-t after:flex-1  after:border-gray-300'>
             <p className='font-semibold'>OR</p>
           </div>
