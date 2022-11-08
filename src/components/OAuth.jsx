@@ -28,7 +28,7 @@ const onGoogleClick = async () => {
       })
     }
     // redirect user to home page
-    navigate('/')
+    navigate('/profile')
   } catch (error) {
     toast.error("Couldn't log in with Google")
     console.log(error)
