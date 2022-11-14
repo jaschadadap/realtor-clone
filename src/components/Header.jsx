@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 
 export default function Header() {
     const [pageState, setPageState] = useState("Sign In")
+    const [dynamicLink, setDynamicLink] = useState('/sign-in')
     const location = useLocation()
     const navigate =  useNavigate()
     const auth = getAuth()
@@ -14,8 +15,10 @@ export default function Header() {
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 setPageState("Profile")
+                setDynamicLink('/profile')
             } else {
                 setPageState("Sign In")
+                setDynamicLink('/sign-in')
             }
         })
     }, [auth])
@@ -36,7 +39,7 @@ export default function Header() {
                 <ul className='flex space-x-10'>
                     <li onClick={() => navigate('/')} className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${matchPath('/') && "text-black border-b-red-500"}`}>Home</li>
                     <li onClick={() => navigate('/offers')}  className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${matchPath('/offers') && "text-black border-b-red-500"}`}>Offers</li>
-                    <li onClick={() => navigate('/sign-in')}  className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${(matchPath('/sign-in') || matchPath('/profile')) && "text-black border-b-red-500"}`}>
+                    <li onClick={() => navigate(dynamicLink)}  className={`cursor-pointer py-3 text-sm font-semibold text-gray-400 border-b-[3px] border-b-transparent ${(matchPath('/sign-in') || matchPath('/profile')) && "text-black border-b-red-500"}`}>
                         {pageState}
                     </li>
                 </ul>
